@@ -197,6 +197,6 @@
            DISPLAY "4 years      " WS-FUTURE-FOUR-YEAR " 16 days".
            DISPLAY "5 years      " WS-FUTURE-FIVE-YEAR " 18 days".
            DISPLAY "6 years      " WS-FUTURE-SIX-YEAR " 20 days".
-           
 
+           
 
