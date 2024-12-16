@@ -188,15 +188,57 @@
            INTO WS-FORMATTED-DATETIME.
 
            DISPLAY "現在の日本時間: " WS-FORMATTED-DATETIME.
-           DISPLAY "------------- ----------".
-           DISPLAY "期間           法定付与日".
-           DISPLAY "6 months     " WS-FUTURE-DATE " 10 days".
-           DISPLAY "1 year       " WS-FUTURE-ONE-YEAR " 11 days".
-           DISPLAY "2 years      " WS-FUTURE-TWO-YEAR " 12 days".
-           DISPLAY "3 years      " WS-FUTURE-THREE-YEAR " 14 days".
-           DISPLAY "4 years      " WS-FUTURE-FOUR-YEAR " 16 days".
-           DISPLAY "5 years      " WS-FUTURE-FIVE-YEAR " 18 days".
-           DISPLAY "6 years      " WS-FUTURE-SIX-YEAR " 20 days".
+           DISPLAY "-----------  ----------".
+           DISPLAY "期間         法定付与日".
+           DISPLAY "-----------  ----------".
 
-           
+           EVALUATE WK-DAYS
+             WHEN  1
+              DISPLAY "6 month     " WS-FUTURE-DATE " 1 days"
+              DISPLAY "1 year      " WS-FUTURE-ONE-YEAR " 2 days"
+              DISPLAY "2 year      " WS-FUTURE-TWO-YEAR " 2 days"
+              DISPLAY "3 year      " WS-FUTURE-THREE-YEAR " 2 days"
+              DISPLAY "4 year      " WS-FUTURE-FOUR-YEAR " 3 days"
+              DISPLAY "5 year      " WS-FUTURE-FIVE-YEAR " 3 days"
+              DISPLAY "6 year      " WS-FUTURE-SIX-YEAR " 3 days"
+
+             WHEN  2
+              DISPLAY "6 month     " WS-FUTURE-DATE " 3 days"
+              DISPLAY "1 year      " WS-FUTURE-ONE-YEAR " 4 days"
+              DISPLAY "2 year      " WS-FUTURE-TWO-YEAR " 4 days"
+              DISPLAY "3 year      " WS-FUTURE-THREE-YEAR " 5 days"
+              DISPLAY "4 year      " WS-FUTURE-FOUR-YEAR " 6 days"
+              DISPLAY "5 year      " WS-FUTURE-FIVE-YEAR " 6 days"
+              DISPLAY "6 year      " WS-FUTURE-SIX-YEAR " 7 days"
+
+             WHEN  3
+              DISPLAY "6 month     " WS-FUTURE-DATE " 5 days"
+              DISPLAY "1 year      " WS-FUTURE-ONE-YEAR " 6 days"
+              DISPLAY "2 year      " WS-FUTURE-TWO-YEAR " 6 days"
+              DISPLAY "3 year      " WS-FUTURE-THREE-YEAR " 8 days"
+              DISPLAY "4 year      " WS-FUTURE-FOUR-YEAR " 9 days"
+              DISPLAY "5 year      " WS-FUTURE-FIVE-YEAR " 10 days"
+              DISPLAY "6 year      " WS-FUTURE-SIX-YEAR " 11 days"
+
+             WHEN  4
+              DISPLAY "6 month     " WS-FUTURE-DATE " 7 days"
+              DISPLAY "1 year      " WS-FUTURE-ONE-YEAR " 8 days"
+              DISPLAY "2 year      " WS-FUTURE-TWO-YEAR " 9 days"
+              DISPLAY "3 year      " WS-FUTURE-THREE-YEAR " 10 days"
+              DISPLAY "4 year      " WS-FUTURE-FOUR-YEAR " 12 days"
+              DISPLAY "5 year      " WS-FUTURE-FIVE-YEAR " 13 days"
+              DISPLAY "6 year      " WS-FUTURE-SIX-YEAR " 15 days"
+
+             WHEN  5
+              DISPLAY "6 month     " WS-FUTURE-DATE " 10 days"
+              DISPLAY "1 year      " WS-FUTURE-ONE-YEAR " 11 days"
+              DISPLAY "2 year      " WS-FUTURE-TWO-YEAR " 12 days"
+              DISPLAY "3 year      " WS-FUTURE-THREE-YEAR " 14 days"
+              DISPLAY "4 year      " WS-FUTURE-FOUR-YEAR " 16 days"
+              DISPLAY "5 year      " WS-FUTURE-FIVE-YEAR " 18 days"
+              DISPLAY "6 year      " WS-FUTURE-SIX-YEAR " 20 days"
+
+           END-EVALUATE.
+
+
 
