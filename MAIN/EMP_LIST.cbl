@@ -21,6 +21,13 @@
                03  EMP-NAME             PIC  X(20).
                03  EMP-JOIN_DATE        PIC  X(10).
                03  EMP-STATUS           PIC  X(4).
+           01  PLB-REC-VARS.
+               03  BALANCE-ID           PIC  X(8).
+               03  B-EMP-ID             PIC  X(6).
+               03  BALANCE-STATUS       PIC  X(4).
+               03  GRANT-DAYS           PIC  X(10).
+               03  HOLD-DAYS            PIC  X(4).
+               03  LAST-UPD-DATE    PIC  X(10).
            EXEC SQL END DECLARE SECTION END-EXEC.
 
            EXEC SQL INCLUDE SQLCA END-EXEC.
@@ -40,11 +47,16 @@
            END-EXEC.
            IF SQLCODE NOT = ZERO PERFORM ERROR-RTN STOP RUN.
 
-      *    DECLARE CURSOR FOR FETCHING EMPLOYEE DATA
+      *    DECLARE CURSOR FOR FETCHING EMPLOYEE AND BALANCE DATA
            EXEC SQL
                DECLARE EMP_CURSOR CURSOR FOR
-               SELECT EMP_ID, EMP_NAME, EMP_JOIN_DATE, EMP_STATUS
+               SELECT EMP_MASTER.EMP_ID, EMP_NAME, EMP_JOIN_DATE, 
+                      EMP_STATUS,
+                      PL_BALANCE.BALANCE_ID, BALANCE_STATUS, GRANT_DAYS,
+                      HOLD_DAYS, LAST_UPD_DATE
                FROM EMP_MASTER
+               INNER JOIN PL_BALANCE 
+               ON EMP_MASTER.EMP_ID = PL_BALANCE.B_EMP_ID
            END-EXEC.
            IF SQLCODE NOT = ZERO PERFORM ERROR-RTN STOP RUN.
 
@@ -54,20 +66,28 @@
            END-EXEC.
            IF SQLCODE NOT = ZERO PERFORM ERROR-RTN STOP RUN.
 
+      *    DISPLAY HEADER
+           DISPLAY "---------------------------------------------".
+           DISPLAY "従業員有給情報一覧".
+           DISPLAY "---------------------------------------------".
+
       *    FETCH DATA IN A LOOP
            PERFORM UNTIL SQLCODE NOT = 0
                EXEC SQL
                    FETCH EMP_CURSOR
-                   INTO :EMP-ID, :EMP-NAME, :EMP-JOIN_DATE, :EMP-STATUS
+                   INTO :EMP-ID, :EMP-NAME, :EMP-JOIN_DATE, :EMP-STATUS,
+                        :BALANCE-ID, :BALANCE-STATUS, :GRANT-DAYS,
+                        :HOLD-DAYS, :LAST-UPD-DATE
                END-EXEC
                IF SQLCODE = 0
-                   DISPLAY "EMPLOYEE DATA:"
-                   DISPLAY "ID       : " EMP-ID
-                   DISPLAY "NAME     : " EMP-NAME
-                   DISPLAY "JOIN DATE: " EMP-JOIN_DATE
-                   DISPLAY "STATUS   : " EMP-STATUS
+                   DISPLAY "-------------------------------------"
+                   DISPLAY "名前        : " EMP-NAME 
+                   DISPLAY "入社日       : " EMP-JOIN_DATE
+                   DISPLAY "有給付与日   : " GRANT-DAYS
+                   DISPLAY "有給付与日数 : " HOLD-DAYS
                END-IF
            END-PERFORM.
+
 
       *    CLOSE CURSOR
            EXEC SQL

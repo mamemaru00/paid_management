@@ -20,7 +20,7 @@
        01  TEST-DATA-PLH-R   REDEFINES TEST-DATA-PLH.
            03  TEST-TBL-PLH    OCCURS  10 TIMES.
                05  TEST-HISTORY-ID          PIC  X(8).
-               05  TEST-BALANCE-ID          PIC  X(8).
+               05  TEST-H-BALANCE-ID        PIC  X(8).
                05  TEST-ACQ-DATE            PIC  X(10).
                05  TEST-ACQ-DAYS            PIC  X(4).
                05  TEST-INSERT-DATETIME     PIC  X(19).
@@ -34,7 +34,7 @@
        01  PASSWD                  PIC  X(10) VALUE SPACE.
        01  PLH-REC-VARS.
            03  HISTORY-ID          PIC  X(8).
-           03  BALANCE-ID          PIC  X(8).
+           03  H-BALANCE-ID        PIC  X(8).
            03  ACQ-DATE            PIC  X(10).
            03  ACQ-DAYS            PIC  X(4).
            03  INSERT-DATETIME     PIC  X(19).
@@ -58,7 +58,7 @@
                CREATE TABLE PL_HISTORY
                (
                    HISTORY_ID         VARCHAR(8) NOT NULL,
-                   BALANCE_ID         VARCHAR(8) NOT NULL,
+                   H_BALANCE_ID       VARCHAR(8) NOT NULL,
                    ACQ_DATE           DATE NOT NULL,
                    ACQ_DAYS           DECIMAL(3,1) NOT NULL,
                    INSERT_DATETIME    TIMESTAMP,
@@ -69,14 +69,14 @@
 
            PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > 3
                MOVE TEST-HISTORY-ID(IDX)        TO HISTORY-ID
-               MOVE TEST-BALANCE-ID(IDX)        TO BALANCE-ID
+               MOVE TEST-H-BALANCE-ID(IDX)      TO H-BALANCE-ID
                MOVE TEST-ACQ-DATE(IDX)          TO ACQ-DATE
                MOVE TEST-ACQ-DAYS(IDX)          TO ACQ-DAYS
                MOVE TEST-INSERT-DATETIME(IDX)   TO INSERT-DATETIME
            
                EXEC SQL
                  INSERT INTO PL_HISTORY VALUES
-                 (:HISTORY-ID, :BALANCE-ID, :ACQ-DATE, :ACQ-DAYS
+                 (:HISTORY-ID, :H-BALANCE-ID, :ACQ-DATE, :ACQ-DAYS
                  , :INSERT-DATETIME)
                END-EXEC
                IF SQLCODE NOT = ZERO 

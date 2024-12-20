@@ -20,10 +20,10 @@
        01  TEST-DATA-PLB-R   REDEFINES TEST-DATA-PLB.
            03  TEST-TBL-PLB    OCCURS  10 TIMES.
                05  TEST-BALANCE-ID          PIC  X(8).
-               05  TEST-EMP-ID              PIC  X(6).
+               05  TEST-B-EMP-ID              PIC  X(6).
                05  TEST-BALANCE-STATUS      PIC  X(4).
                05  TEST-GRANT-DAYS          PIC  X(10).
-               05  TEST-HOLD-DAYS           PIC X(4).
+               05  TEST-HOLD-DAYS           PIC  X(4).
                05  TEST-LAST-UPD-DATE       PIC  X(10).
 
        01  IDX                     PIC  99 VALUE 0.
@@ -35,10 +35,10 @@
        01  PASSWD                  PIC  X(10) VALUE SPACE.
        01  PLB-REC-VARS.
            03  BALANCE-ID           PIC  X(8).
-           03  EMP-ID               PIC  X(6).
+           03  B-EMP-ID               PIC  X(6).
            03  BALANCE-STATUS       PIC  X(4).
            03  GRANT-DAYS           PIC  X(10).
-           03  HOLD-DAYS            PIC X(4).
+           03  HOLD-DAYS            PIC  X(4).
            03  PLB-LAST-UPD-DATE    PIC  X(10).
        EXEC SQL END DECLARE SECTION END-EXEC.
 
@@ -60,7 +60,7 @@
                CREATE TABLE PL_BALANCE
                (
                    BALANCE_ID     VARCHAR(8) NOT NULL,
-                   EMP_ID         VARCHAR(6) NOT NULL,
+                   B_EMP_ID         VARCHAR(6) NOT NULL,
                    BALANCE_STATUS BOOLEAN NOT NULL,
                    GRANT_DAYS     DATE NOT NULL,
                    HOLD_DAYS      DECIMAL(3,1) NOT NULL,
@@ -72,14 +72,14 @@
 
            PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > 3
                MOVE TEST-BALANCE-ID(IDX)        TO BALANCE-ID
-               MOVE TEST-EMP-ID(IDX)            TO EMP-ID
+               MOVE TEST-B-EMP-ID(IDX)            TO B-EMP-ID
                MOVE TEST-BALANCE-STATUS(IDX)    TO BALANCE-STATUS
                MOVE TEST-GRANT-DAYS(IDX)        TO GRANT-DAYS 
                MOVE TEST-HOLD-DAYS(IDX)         TO HOLD-DAYS
                MOVE TEST-LAST-UPD-DATE(IDX)     TO PLB-LAST-UPD-DATE
                EXEC SQL
                  INSERT INTO PL_BALANCE VALUES
-                 (:BALANCE-ID, :EMP-ID, :BALANCE-STATUS, :GRANT-DAYS, 
+                 (:BALANCE-ID, :B-EMP-ID, :BALANCE-STATUS, :GRANT-DAYS, 
                  :HOLD-DAYS,:PLB-LAST-UPD-DATE)
                END-EXEC
                IF SQLCODE NOT = ZERO 
