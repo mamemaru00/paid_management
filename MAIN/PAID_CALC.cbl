@@ -1,16 +1,17 @@
       ******************************************************************
        IDENTIFICATION              DIVISION.
       ******************************************************************
-       PROGRAM-ID.                 EMP_LIST.
+       PROGRAM-ID.                 PAID_CALC.
        AUTHOR.                     mamemaru00.
-       DATE-WRITTEN.               2024-12-19.
+       DATE-WRITTEN.               2024-12-20.
 
       ******************************************************************
        DATA                        DIVISION.
       ******************************************************************
        WORKING-STORAGE             SECTION.
-           01  IDX                     PIC  99 VALUE 0.
-           01  SYS-TIME                PIC  9(08).
+           01 INPUT-PAID.
+               03 INPUT-USER        PIC 9(6).
+               03 INPUT-PAID        PIC 9(4).
 
            EXEC SQL BEGIN DECLARE SECTION END-EXEC.
            01  DBNAME                  PIC  X(30) VALUE SPACE.
@@ -27,17 +28,40 @@
                03  BALANCE-STATUS       PIC  X(4).
                03  GRANT-DAYS           PIC  X(10).
                03  HOLD-DAYS            PIC  X(4).
-               03  LAST-UPD-DATE    PIC  X(10).
+               03  LAST-UPD-DATE        PIC  X(10).
+           01  PLH-REC-VARS.
+               03  HISTORY-ID          PIC  X(8).
+               03  H-BALANCE-ID        PIC  X(8).
+               03  ACQ-DATE            PIC  X(10).
+               03  ACQ-DAYS            PIC  X(4).
+               03  INSERT-DATETIME     PIC  X(19).
            EXEC SQL END DECLARE SECTION END-EXEC.
 
-           EXEC SQL INCLUDE SQLCA END-EXEC.
-
+           EXEC SQL INCLUDE SQLCA END-EXEC.  
       ******************************************************************
        PROCEDURE                   DIVISION.
-      ******************************************************************
+      ******************************************************************             
        MAIN-RTN.
-           DISPLAY "*** EMP_LIST STARTED ***".
+           PERFORM INPUT-PAID.
+           PERFORM CONNECT-TO-DATABASE.
+           PERFORM PAID-CALC.
 
+           STOP RUN.
+      
+      ******************************************************************
+       INPUT-PAID.
+      ******************************************************************
+           DISPLAY "ユーザID : >> ".
+           ACCEPT INPUT-USER FROM CONSOLE.
+           DISPLAY "有給取得日数 : >> ".
+           ACCEPT INPUT-PAID FROM CONSOLE.
+
+           DISPLAY "入社日 = " INPUT-USER.
+           DISPLAY "週所定労働日数 = " INPUT-PAID.
+
+      ******************************************************************
+       CONNECT-TO-DATABASE.
+      ******************************************************************
       *    CONNECT TO DATABASE
            MOVE  "testdb@db"       TO   DBNAME.
            MOVE  "postgres"        TO   USERNAME.
@@ -46,64 +70,25 @@
                CONNECT :USERNAME IDENTIFIED BY :PASSWD USING :DBNAME 
            END-EXEC.
            IF SQLCODE NOT = ZERO PERFORM ERROR-RTN STOP RUN.
-
-      *    DECLARE CURSOR FOR FETCHING EMPLOYEE AND BALANCE DATA
-           EXEC SQL
+      
+      ******************************************************************
+       PAID-CALC.
+      ******************************************************************
+           EXEC SQL 
                DECLARE EMP_CURSOR CURSOR FOR
-               SELECT EMP_MASTER.EMP_ID, EMP_NAME, EMP_JOIN_DATE, 
-                      EMP_STATUS,
-                      PL_BALANCE.BALANCE_ID, BALANCE_STATUS, GRANT_DAYS,
-                      HOLD_DAYS, LAST_UPD_DATE
+               SELECT EMP_MASTER.EMP_ID, EMP_NAME, 
+                      HOLD_DAYS,
+                      ACQ_DATE,ACQ_DAYS,INSERT_DATETIME,
                FROM EMP_MASTER
                INNER JOIN PL_BALANCE 
                ON EMP_MASTER.EMP_ID = PL_BALANCE.B_EMP_ID
+               INNER JOIN PL_HISTORY 
+               ON PL_BALANCE.BALANCE_ID = PL_HISTORY.H_BALANCE_ID
                ORDER BY EMP_NAME ASC
-
+               
            END-EXEC.
-           IF SQLCODE NOT = ZERO PERFORM ERROR-RTN STOP RUN.
+           IF  SQLCODE NOT = ZERO PERFORM ERROR-RTN STOP RUN.
 
-      *    OPEN CURSOR
-           EXEC SQL
-               OPEN EMP_CURSOR
-           END-EXEC.
-           IF SQLCODE NOT = ZERO PERFORM ERROR-RTN STOP RUN.
-
-      *    DISPLAY HEADER
-           DISPLAY "---------------------------------------------".
-           DISPLAY "従業員有給情報一覧".
-           DISPLAY "---------------------------------------------".
-
-      *    FETCH DATA IN A LOOP
-           PERFORM UNTIL SQLCODE NOT = 0
-               EXEC SQL
-                   FETCH EMP_CURSOR
-                   INTO :EMP-ID, :EMP-NAME, :EMP-JOIN_DATE, :EMP-STATUS,
-                        :BALANCE-ID, :BALANCE-STATUS, :GRANT-DAYS,
-                        :HOLD-DAYS, :LAST-UPD-DATE
-               END-EXEC
-               IF SQLCODE = 0
-                   DISPLAY "-------------------------------------"
-                   DISPLAY "名前        : " EMP-NAME 
-                   DISPLAY "入社日       : " EMP-JOIN_DATE
-                   DISPLAY "有給付与日   : " GRANT-DAYS
-                   DISPLAY "有給保有日数 : " HOLD-DAYS
-               END-IF
-           END-PERFORM.
-
-
-      *    CLOSE CURSOR
-           EXEC SQL
-               CLOSE EMP_CURSOR
-           END-EXEC.
-           IF SQLCODE NOT = ZERO PERFORM ERROR-RTN STOP RUN.
-
-      *    DISCONNECT
-           EXEC SQL
-               DISCONNECT ALL
-           END-EXEC.
-           DISPLAY "*** EMP_LIST FINISHED ***".
-           STOP RUN.
-      
       ******************************************************************
        ERROR-RTN.
       ******************************************************************
@@ -140,12 +125,3 @@
                  DISPLAY SQLERRMC
            END-EVALUATE.
       ******************************************************************
-
-      
-
-
-
-      
-
-
-
