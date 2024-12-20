@@ -57,7 +57,7 @@
                CREATE TABLE EMP_MASTER
                (
                    EMP_ID         VARCHAR(6) NOT NULL,
-                   EMP_NAME       CHAR(20) NOT NULL,
+                   EMP_NAME       VARCHAR(20) NOT NULL,
                    EMP_JOIN_DATE  DATE,
                    EMP_STATUS     BOOLEAN,
                    CONSTRAINT IEMP_0 PRIMARY KEY (EMP_ID)

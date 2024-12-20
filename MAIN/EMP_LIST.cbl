@@ -57,6 +57,8 @@
                FROM EMP_MASTER
                INNER JOIN PL_BALANCE 
                ON EMP_MASTER.EMP_ID = PL_BALANCE.B_EMP_ID
+               ORDER BY EMP_NAME ASC
+
            END-EXEC.
            IF SQLCODE NOT = ZERO PERFORM ERROR-RTN STOP RUN.
 
