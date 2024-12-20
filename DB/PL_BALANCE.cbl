@@ -19,8 +19,8 @@
        
        01  TEST-DATA-PLB-R   REDEFINES TEST-DATA-PLB.
            03  TEST-TBL-PLB    OCCURS  10 TIMES.
-               05  TEST-BALANCE-ID         PIC  X(8).
-               05  TEST-EMP-ID             PIC  X(6).
+               05  TEST-BALANCE-ID          PIC  X(8).
+               05  TEST-EMP-ID              PIC  X(6).
                05  TEST-BALANCE-STATUS      PIC  X(4).
                05  TEST-GRANT-DAYS          PIC  X(10).
                05  TEST-HOLD-DAYS           PIC X(4).
